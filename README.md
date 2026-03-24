@@ -2,7 +2,7 @@
 
 > Ferramenta web para processar planilhas Excel, formatar números de celular e exportar arquivos CSV prontos para uso — tudo no navegador, sem instalação ou servidor.
 
-🔗 **Acesse agora:** [https://analisedadosht.github.io/formata_aniversariantes/](https://analisedadosht.github.io/formata_aniversariantes/)
+🔗 **Acesse agora:** [https://analisedadosht.github.io/formata_dados/](https://analisedadosht.github.io/formata_dados/)
 
 ---
 
