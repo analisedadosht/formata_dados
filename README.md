@@ -122,7 +122,7 @@ Nenhuma instalação necessária.
    ```bash
    git clone https://github.com/analisedadosht/formata_aniversariantes.git
    ```
-2. Abra o arquivo `aniversariantes.html` diretamente no navegador.
+2. Abra o arquivo `index.html` diretamente no navegador.
 
 ### Passo a passo
 
