@@ -17,8 +17,8 @@ O **Formatador de Dados** é uma aplicação web de página única que automatiz
 ## ✨ Funcionalidades
 
 - **Upload por arrastar e soltar** ou seleção via botão
-- **Seletor de categoria** com três finalidades de exportação
-- **Campo de data** disponível apenas quando necessário para a categoria selecionada
+- **Seletor de categoria** com quatro finalidades de exportação: Aniversário, Vencimento de Receita, Lentes de Contato e Promoção
+- **Campo de data** disponível para as categorias Aniversário e Lentes de Contato
 - **Filtragem automática**: processa apenas registros que possuem número de celular identificado
 - **Formatação de telefone**: remove símbolos e garante o código do país
 - **Normalização de nome**: extrai o primeiro nome, remove acentos e padroniza em maiúsculas
@@ -31,12 +31,21 @@ O **Formatador de Dados** é uma aplicação web de página única que automatiz
 
 ## 🗂️ Estrutura da Planilha Esperada
 
-A planilha deve conter ao menos as seguintes colunas (a busca é case-insensitive):
+A planilha pode conter diferentes colunas conforme a categoria selecionada. A busca é **case-insensitive**.
+
+### Categorias Aniversário, Vencimento de Receita e Promoção
 
 | Coluna     | Descrição                                                                                      |
-|------------|-----------------------------------------------------------------------------------------------|
+|------------|--------------------------------------------------------------------------------------------|
 | `ds_fone`  | Campo de telefone. Suporta múltiplos números separados por `/`. Apenas entradas com `CEL:` são processadas. |
 | `ds_razao` | Nome completo do registro. O sistema extrai apenas o primeiro nome.                           |
+
+### Categoria Lentes de Contato
+
+| Coluna     | Descrição                                                                                      |
+|------------|--------------------------------------------------------------------------------------------|
+| `Telefone` | Campo de telefone. Suporta múltiplos números separados por `/`. Apenas entradas com `CEL:` são processadas. |
+| `Fantasia` | Nome do registro. O sistema extrai apenas o primeiro nome.                                     |
 
 **Exemplo de conteúdo esperado:**
 
@@ -77,6 +86,17 @@ Campo de data não utilizado nesta categoria.
 | `ficaparaproxima`         | Coluna auxiliar com valor fixo `ficaparaproxima`     |
 | `podemosFalarFuturamente` | Coluna auxiliar com valor fixo `podemosFalarFuturamente` |
 
+### 👁️ Lentes de Contato
+Requer preenchimento do campo de data. Procura pelas colunas `Telefone` e `Fantasia`.
+
+| Coluna            | Descrição                                      |
+|-------------------|------------------------------------------------|
+| `TELEFONE`        | Número formatado com código do país            |
+| `NOME`            | Primeiro nome, sem acentos, em maiúsculas      |
+| `DATA`            | Data informada pelo usuário (`dd/mm`)          |
+| `atendent`        | Coluna auxiliar com valor fixo `atendent`      |
+| `ficaparaproxima` | Coluna auxiliar com valor fixo `ficaparaproxima` |
+
 ### 🏷️ Promoção
 Campo de data não utilizado nesta categoria. Nome não incluído.
 
@@ -101,6 +121,7 @@ dados_formatados_[categoria]_[data].csv
 ```
 dados_formatados_aniversario_20-03-2026.csv
 dados_formatados_vencimento_receita_20-03-2026.csv
+dados_formatados_lentes_20-03-2026.csv
 dados_formatados_promocao_20-03-2026.csv
 ```
 
@@ -127,8 +148,8 @@ Nenhuma instalação necessária.
 ### Passo a passo
 
 1. **Faça o upload** da planilha arrastando o arquivo ou clicando para selecionar (`.xlsx` ou `.xls`)
-2. **Selecione a categoria** desejada: Aniversário, Vencimento de Receita ou Promoção
-3. **Informe a data** (apenas para a categoria Aniversário)
+2. **Selecione a categoria** desejada: Aniversário, Vencimento de Receita, Lentes de Contato ou Promoção
+3. **Informe a data** (necessária para as categorias Aniversário e Lentes de Contato)
 4. **Clique em "Processar Planilha"**
 5. **Acompanhe o log** para verificar o processamento
 6. **Confira a pré-visualização** das primeiras 20 linhas
