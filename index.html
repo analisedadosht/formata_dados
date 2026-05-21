@@ -506,7 +506,7 @@
   /* Category selector */
   .category-selector {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
   }
 
@@ -586,6 +586,7 @@
     <div class="category-selector">
       <button class="cat-btn active" data-cat="aniversario">🎂 Aniversário</button>
       <button class="cat-btn" data-cat="vencimento">📋 Vencimento de Receita</button>
+      <button class="cat-btn" data-cat="lentes">👁️ Lentes de Contato</button>
       <button class="cat-btn" data-cat="promocao">🏷️ Promoção</button>
     </div>
   </div>
@@ -666,14 +667,14 @@
       btn.classList.add('active');
       currentCategory = btn.dataset.cat;
       const dateField = document.getElementById('dateField');
-      dateField.style.display = currentCategory === 'aniversario' ? '' : 'none';
-      if (currentCategory !== 'aniversario') dateInput.value = '';
+      dateField.style.display = (currentCategory === 'aniversario' || currentCategory === 'lentes') ? '' : 'none';
+      if (currentCategory !== 'aniversario' && currentCategory !== 'lentes') dateInput.value = '';
       updateProcessBtn();
     });
   });
 
   function updateProcessBtn() {
-    const needsDate = currentCategory === 'aniversario';
+    const needsDate = currentCategory === 'aniversario' || currentCategory === 'lentes';
     btnProcess.disabled = !(currentFile && (!needsDate || dateInput.value));
   }
 
@@ -760,11 +761,12 @@
       const sheetName = workbook.SheetNames[0];
       log(`Aba encontrada: "${sheetName}"`, 'ok');
 
-      // Data informada pelo usuário (formato yyyy-mm-dd → dd/mm/yyyy) — apenas para Aniversário
-      let y = '', m = '', d = '', dataFormatada = '';
-      if (currentCategory === 'aniversario' && dateInput.value) {
+      // Data informada pelo usuário (formato yyyy-mm-dd → dd/mm/yyyy) — apenas para Aniversário e Lentes
+      let y = '', m = '', d = '', dataFormatada = '', dataFormatadaLentes = '';
+      if ((currentCategory === 'aniversario' || currentCategory === 'lentes') && dateInput.value) {
         [y, m, d] = dateInput.value.split('-');
         dataFormatada = `${d}/${m}/${y}`;
+        dataFormatadaLentes = `${d}/${m}`;
         log(`Data definida pelo usuário: ${dataFormatada}`, 'ok');
       }
 
@@ -778,9 +780,15 @@
       const keys = Object.keys(rows[0]);
       log(`Colunas: ${keys.join(', ')}`, 'dim');
 
-      // Tenta encontrar colunas ds_fone e ds_razao (case-insensitive)
-      const foneKey = keys.find(k => k.toLowerCase() === 'ds_fone') || 'ds_fone';
-      const razaoKey = keys.find(k => k.toLowerCase() === 'ds_razao') || 'ds_razao';
+      // Tenta encontrar colunas ds_fone e ds_razao (case-insensitive), com alternativas
+      let foneKey, razaoKey;
+      if (currentCategory === 'lentes') {
+        foneKey = keys.find(k => k.toLowerCase() === 'telefone') || 'telefone';
+        razaoKey = keys.find(k => k.toLowerCase() === 'fantasia') || 'fantasia';
+      } else {
+        foneKey = keys.find(k => k.toLowerCase() === 'ds_fone' || k.toLowerCase() === 'telefone') || 'ds_fone';
+        razaoKey = keys.find(k => k.toLowerCase() === 'ds_razao' || k.toLowerCase() === 'fantasia') || 'ds_razao';
+      }
 
       log(`Usando coluna de fone: "${foneKey}"`);
       log(`Usando coluna de nome: "${razaoKey}"`);
@@ -830,6 +838,14 @@
             atendent: 'atendent',
             ficaparaproxima: 'ficaparaproxima',
             podemosFalarFuturamente: 'podemosFalarFuturamente',
+          };
+        } else if (currentCategory === 'lentes') {
+          extraCols = {
+            TELEFONE: numero,
+            NOME: primeiroNome,
+            DATA: dataFormatadaLentes,
+            atendent: 'atendent',
+            ficaparaproxima: 'ficaparaproxima',
           };
         } else if (currentCategory === 'promocao') {
           extraCols = {
